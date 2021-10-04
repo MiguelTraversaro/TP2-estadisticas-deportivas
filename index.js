@@ -31,7 +31,7 @@ const registroFiltrado = (partido, equipo) => {
 const tantos = (registroEquipo) => {
   let puntos = {};
   let total = 0;
-  registroEquipo.forEach(anotacion => {
+  registroEquipo.map(anotacion => {
     const apellido = anotacion.split(",")[0] 
     let tanto = anotacion.split(",")[1]
     tanto = (tanto === 'DOBLE') ? 2 : 3
@@ -54,15 +54,13 @@ const resultadoFinal = (puntosEquipoA,puntosEquipoB) => {
 
 const goleador = (puntosEquipoA,puntosEquipoB) => {
 let maxGol = 0; let goleador;
-let goleadorA = buscarGoleador(puntosEquipoA).goleador;
-let goleadorB = buscarGoleador(puntosEquipoB).goleador;
-let maxGolA = buscarGoleador(puntosEquipoA).maxGol;
-let maxGolB = buscarGoleador(puntosEquipoB).maxGol;
+let maxGolA = Object.entries(buscarGoleador(puntosEquipoA))[1][1];
+let maxGolB = Object.entries(buscarGoleador(puntosEquipoB))[1][1];
 if (maxGolA > maxGolB) {
-  goleador = nombreCompleto(goleadorA,equipoA)
+  goleador = nombreCompleto(Object.entries(buscarGoleador(puntosEquipoA))[0][1],equipoA)
   maxGol = maxGolA
 } else {
-  goleador = nombreCompleto(goleadorB,equipoB)
+  goleador = nombreCompleto(Object.entries(buscarGoleador(puntosEquipoB))[0][1],equipoB)
   maxGol = maxGolB
 }
 console.log(`Jugador con mas puntos: \n${goleador}: ${maxGol}`)
@@ -70,15 +68,6 @@ return {
   goleador,
   maxGol
 }
-}
-
-const nombreCompleto = (nombre, equipo) => {
-  equipo.forEach(nombreCompleto => {
-    if (nombre == nombreCompleto.split(" ")[1]) {
-      nombre = nombreCompleto
-    }
-  })
-  return nombre
 }
 
 const buscarGoleador = (puntosEquipo) => {
@@ -95,9 +84,18 @@ const buscarGoleador = (puntosEquipo) => {
   }
 }
 
+const nombreCompleto = (nombre, equipo) => {
+  equipo.map(nombreCompleto => {
+    if (nombre == nombreCompleto.split(" ")[1]) {
+      nombre = nombreCompleto
+    }
+  })
+  return nombre
+}
+
 const distribucionDePuntaje = (partido) => {
   let contDoble = 0;let contTriple = 0;let acumDoble = 0;let acumTriple = 0;
-  partido.forEach(puntaje => {
+  partido.map(puntaje => {
     let punto = puntaje.split(",")[1]
     if (punto == "DOBLE") {
       contDoble++;
@@ -121,4 +119,3 @@ const puntosEquipoB = puntosEquipo(partido, equipoB)
 console.log(resultadoFinal(puntosEquipoA,puntosEquipoB))
 goleador(puntosEquipoA,puntosEquipoB)
 console.log(distribucionDePuntaje(partido))
-
